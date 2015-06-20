@@ -18,6 +18,8 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     @IBOutlet weak var iconImageView: UIImageView!
     // 表示ラベル：天気
     @IBOutlet weak var mainLabel: UILabel!
+    // 表示ラベル：
+    
     
     // 地名格納変数
     var addressData: String = "Hoge"
@@ -28,9 +30,9 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     // 取得した経度を保持するインスタンス
     var longitude: CLLocationDegrees!
     
-    // 検証用array
-    var kenDataArray = NSArray()
-    var kenDataDic = NSDictionary()
+    // weather用、配列と辞書
+    var weatherDataArray = NSArray()
+    var weatherDataDic = NSDictionary()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,29 +92,38 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
             // JSONデータをNSDictionary型に変換
             let jsonDic = json as! NSDictionary
             // パージ：weather
-            self.kenDataArray = jsonDic["weather"] as! NSArray
-            self.kenDataDic = self.kenDataArray[0] as! NSDictionary
-            println("コメントdic：\(self.kenDataDic)")
-            // データ格納：weather
-            var dataWeatherMain: AnyObject? = self.kenDataDic["main"]
-            println("コメントdicMain：\(dataWeatherMain!)")
-            self.mainLabel.text = "\(dataWeatherMain!)"
+            self.weatherDataArray = jsonDic["weather"] as! NSArray
+            self.weatherDataDic = self.weatherDataArray[0] as! NSDictionary
+            println("コメントdic：\(self.weatherDataDic)")
             
-            // 表示する画像を設定する
-            var dataWeatherIcon: AnyObject? = self.kenDataDic["icon"]
-            let iconUrl = NSURL(string: "http://openweathermap.org/img/w/\(dataWeatherIcon!).png")
-            println("URL用：\(dataWeatherIcon!),\(iconUrl!)")
-            var err: NSError?
-            var imageData: NSData = NSData(contentsOfURL: iconUrl!, options: NSDataReadingOptions.DataReadingMappedIfSafe, error: &err)!
-            var iconImg = UIImage(data: imageData)
+            var weatherDic:Dictionary = self.weatherDataDic as Dictionary
             
-            let iv:UIImageView = UIImageView(image:iconImg)
-            iv.frame = CGRectMake(0, 0, 100, 100)
-            self.view.addSubview(iv)
-            // 画像の表示する座標を指定する.
-            iv.layer.position = CGPoint(x: self.view.bounds.width/2, y: 120.0)
+            for (key,value) in weatherDic {
+                switch key {
+                case "main":
+                    println("case main：\(value)")
+                    // データ格納：weather
+                    self.mainLabel.text = "\(value)"
+                case "icon":
+                    println("case icon：\(value)")
+                    // 表示する画像を設定する
+                    // var dataWeatherIcon: AnyObject? = self.weatherDataDic["icon"]
+                    let iconUrl = NSURL(string: "http://openweathermap.org/img/w/\(value).png")
+                    println("URL用：\(value),\(iconUrl)")
+                    var err: NSError?
+                    var imageData: NSData = NSData(contentsOfURL: iconUrl!, options: NSDataReadingOptions.DataReadingMappedIfSafe, error: &err)!
+                    var iconImg = UIImage(data: imageData)
+                    
+                    let iv:UIImageView = UIImageView(image:iconImg)
+                    iv.frame = CGRectMake(0, 0, 100, 100)
+                    self.view.addSubview(iv)
+                    // 画像の表示する座標を指定する.
+                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-38, y: 120.0)
+                default:
+                    println("その他")
+                }
+            }
         }
-        
     }
     
     /* 位置情報取得失敗時に実行される関数 */
@@ -124,7 +135,9 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     // 位置情報表示
     func displayLocationInfo(placemark: CLPlacemark) {
         var address: String = ""
-        address = placemark.administrativeArea != nil ? placemark.administrativeArea : ""
+        address = placemark.locality != nil ? placemark.locality : ""
+        address += ","
+        address += placemark.administrativeArea != nil ? placemark.administrativeArea : ""
         address += ","
         address += placemark.country != nil ? placemark.country : ""
         addressData = address
