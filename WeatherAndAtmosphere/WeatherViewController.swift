@@ -96,9 +96,7 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
         lm.stopUpdatingLocation()
         
         // 天気情報の取得先
-        // let requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&units=metric"
-        // テスト用URL
-        let requestUrl = "http://api.openweathermap.org/data/2.5/weather?q=Ueda,jp&units=metric"
+        let requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&units=metric"
         // println("\(requestUrl)")
         // Webサーバに対してHTTp通信のリクエストを出してデータを取得
         Alamofire.request(.GET,requestUrl).responseJSON {(request, response, json, error) in
@@ -164,7 +162,7 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
                     println("case speed：\(value)")
                     var speedData:Double = Double(value as! NSNumber)
                     var speedDataRound = round(speedData*10)/10.0
-                    self.speedLabel.text = "\(speedDataRound)m"
+                    self.speedLabel.text = "\(speedDataRound)m/s"
                 default:
                     println("case deg：\(value)")
                 }
