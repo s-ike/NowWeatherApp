@@ -13,13 +13,18 @@ import Alamofire
 class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     // 表示ラベル：地名
     @IBOutlet weak var cityLabel: UILabel!
-    
     // 表示ビュー：天気アイコン
     @IBOutlet weak var iconImageView: UIImageView!
     // 表示ラベル：天気
     @IBOutlet weak var mainLabel: UILabel!
-    // 表示ラベル：
-    
+    // 表示ラベル：風速数値
+    @IBOutlet weak var speedLabel: UILabel!
+    // 表示ラベル：気温
+    @IBOutlet weak var tempLabel: UILabel!
+    // 表示ラベル：湿度
+    @IBOutlet weak var humidityLabel: UILabel!
+    // 表示ラベル：降水量
+    @IBOutlet weak var rainLabel: UILabel!
     
     // 地名格納変数
     var addressData: String = "Hoge"
@@ -33,6 +38,12 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     // weather用、配列と辞書
     var weatherDataArray = NSArray()
     var weatherDataDic = NSDictionary()
+    // wind用、辞書
+    var windDataDic = NSDictionary()
+    // main用、辞書
+    var mainDataDic = NSDictionary()
+    // rain用、辞書
+    var rainDataDic = NSDictionary()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,16 +96,19 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
         lm.stopUpdatingLocation()
         
         // 天気情報の取得先
-        let requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&units=metric"
+        // let requestUrl = "http://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&units=metric"
+        // テスト用URL
+        let requestUrl = "http://api.openweathermap.org/data/2.5/weather?q=Ueda,jp&units=metric"
         // println("\(requestUrl)")
         // Webサーバに対してHTTp通信のリクエストを出してデータを取得
         Alamofire.request(.GET,requestUrl).responseJSON {(request, response, json, error) in
             // JSONデータをNSDictionary型に変換
             let jsonDic = json as! NSDictionary
+            
             // パージ：weather
             self.weatherDataArray = jsonDic["weather"] as! NSArray
             self.weatherDataDic = self.weatherDataArray[0] as! NSDictionary
-            println("コメントdic：\(self.weatherDataDic)")
+            // println("コメントdic：\(self.weatherDataDic)")
             
             var weatherDic:Dictionary = self.weatherDataDic as Dictionary
             
@@ -102,11 +116,10 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
                 switch key {
                 case "main":
                     println("case main：\(value)")
-                    // データ格納：weather
                     self.mainLabel.text = "\(value)"
                 case "icon":
                     println("case icon：\(value)")
-                    // 表示する画像を設定する
+                    // 表示する天気画像を設定する
                     // var dataWeatherIcon: AnyObject? = self.weatherDataDic["icon"]
                     let iconUrl = NSURL(string: "http://openweathermap.org/img/w/\(value).png")
                     println("URL用：\(value),\(iconUrl)")
@@ -118,10 +131,53 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
                     iv.frame = CGRectMake(0, 0, 100, 100)
                     self.view.addSubview(iv)
                     // 画像の表示する座標を指定する.
-                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-38, y: 120.0)
+                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-90, y: 120.0)
                 default:
                     println("その他")
                 }
+            }
+            // パージ：main
+            self.mainDataDic = jsonDic["main"] as! NSDictionary
+            var mainDic:Dictionary = self.mainDataDic as Dictionary
+            
+            for (key,value) in mainDic {
+                switch key {
+                case "humidity":
+                    println("case humidity：\(value)")
+                    self.humidityLabel.text = "\(value)％"
+                case "temp":
+                    // var tempData:Int = Int(value as! NSNumber)
+                    var tempData:Double = Double(value as! NSNumber)
+                    var tempDataRound = Int(round(tempData))
+                    self.tempLabel.text = "\((tempDataRound))℃"
+                default:
+                    println("")
+                }
+            }
+            // パージ：wind
+            self.windDataDic = jsonDic["wind"] as! NSDictionary
+            var windDic:Dictionary = self.windDataDic as Dictionary
+            
+            for (key,value) in windDic {
+                switch key {
+                case "speed":
+                    println("case speed：\(value)")
+                    var speedData:Double = Double(value as! NSNumber)
+                    var speedDataRound = round(speedData*10)/10.0
+                    self.speedLabel.text = "\(speedDataRound)m"
+                default:
+                    println("case deg：\(value)")
+                }
+            }
+            // パージ：rain
+            if jsonDic["rain"] == nil {
+                println("rain判定：nil")
+            } else {
+                self.rainDataDic = jsonDic["rain"] as! NSDictionary
+                var rainDic:Dictionary = self.rainDataDic as Dictionary
+                println("case rain：\(rainDic)")
+                var rainData: AnyObject! = rainDic["3h"]
+                self.rainLabel.text = "\(rainData)"
             }
         }
     }
@@ -137,8 +193,8 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
         var address: String = ""
         address = placemark.locality != nil ? placemark.locality : ""
         address += ","
-        address += placemark.administrativeArea != nil ? placemark.administrativeArea : ""
-        address += ","
+        // address += placemark.administrativeArea != nil ? placemark.administrativeArea : ""
+        // address += ","
         address += placemark.country != nil ? placemark.country : ""
         addressData = address
         cityLabel.text = addressData
