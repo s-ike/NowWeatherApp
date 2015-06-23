@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import Alamofire
 
-class WeatherViewController: UIViewController,CLLocationManagerDelegate {
+class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManagerDelegate {
     // 表示ラベル：地名
     @IBOutlet weak var cityLabel: UILabel!
     // 表示ビュー：天気アイコン
@@ -45,8 +45,21 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     // rain用、辞書
     var rainDataDic = NSDictionary()
     
+    // インディケーター用変数
+    var indicator = UIActivityIndicatorView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // タイトル
+        self.title = "Now Weather"
+        
+        // インディケーターを画面中央に設定
+        indicator.center = self.view.center
+        // インディケーターのスタイル、色を設定
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+        // インディケーターを設置
+        self.view.addSubview(indicator)
         
         // フィールドの初期化
         lm = CLLocationManager()
@@ -65,6 +78,15 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
         
         // GPSの使用を開始する
         lm.startUpdatingLocation()
+    }
+    
+    // ページの読み込み開始を通知
+    func dataDidStartLoad(iconImageView: UIImageView){
+        indicator.startAnimating()
+    }
+    // ページの読み込み終了を通知
+    func dataDidFinishLoad(iconImageView: UIImageView){
+        indicator.stopAnimating()
     }
     
     /* 位置情報取得成功時に実行される関数 */
@@ -129,7 +151,7 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
                     iv.frame = CGRectMake(0, 0, 100, 100)
                     self.view.addSubview(iv)
                     // 画像の表示する座標を指定する.
-                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-90, y: 120.0)
+                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-90, y: 165.0)
                 default:
                     println("その他")
                 }
@@ -142,7 +164,7 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
                 switch key {
                 case "humidity":
                     println("case humidity：\(value)")
-                    self.humidityLabel.text = "\(value)％"
+                    self.humidityLabel.text = "\(value)%"
                 case "temp":
                     // var tempData:Int = Int(value as! NSNumber)
                     var tempData:Double = Double(value as! NSNumber)
@@ -182,8 +204,13 @@ class WeatherViewController: UIViewController,CLLocationManagerDelegate {
     
     /* 位置情報取得失敗時に実行される関数 */
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        // この例ではLogにErrorと表示するだけ．
+        // Error表示．
         NSLog("Error")
+        let alert = UIAlertView()
+        alert.title = "位置情報取得失敗"
+        alert.message = "位置情報を許可してください"
+        alert.addButtonWithTitle("閉じる")
+        alert.show()
     }
     
     // 位置情報表示
