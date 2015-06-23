@@ -1,0 +1,36 @@
+
+/* Class = "UILabel"; text = "City,Country"; ObjectID = "1b4-X4-PR9"; */
+"1b4-X4-PR9.text" = "City,Country";
+
+/* Class = "UILabel"; text = "降水量："; ObjectID = "1cj-UR-uZM"; */
+"1cj-UR-uZM.text" = "降水量：";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "3yV-NH-cIw"; */
+"3yV-NH-cIw.text" = "0";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "5sk-3F-lcq"; */
+"5sk-3F-lcq.text" = "Label";
+
+/* Class = "UILabel"; text = "　"; ObjectID = "6KM-Kl-4ek"; */
+"6KM-Kl-4ek.text" = "　";
+
+/* Class = "UILabel"; text = "　"; ObjectID = "NaK-5e-lrA"; */
+"NaK-5e-lrA.text" = "　";
+
+/* Class = "UIButton"; normalTitle = "現在地の天気"; ObjectID = "UGQ-Te-b26"; */
+"UGQ-Te-b26.normalTitle" = "現在地の天気";
+
+/* Class = "UILabel"; text = "--％"; ObjectID = "WTi-i0-VAV"; */
+"WTi-i0-VAV.text" = "--％";
+
+/* Class = "UILabel"; text = "湿　度："; ObjectID = "YQa-o6-dRP"; */
+"YQa-o6-dRP.text" = "湿　度：";
+
+/* Class = "UILabel"; text = "--℃"; ObjectID = "djz-0R-gTh"; */
+"djz-0R-gTh.text" = "--℃";
+
+/* Class = "UILabel"; text = "--m/s"; ObjectID = "nZJ-8K-jtD"; */
+"nZJ-8K-jtD.text" = "--m/s";
+
+/* Class = "UILabel"; text = "風　速："; ObjectID = "pGd-lX-D38"; */
+"pGd-lX-D38.text" = "風　速：";
