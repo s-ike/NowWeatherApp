@@ -101,7 +101,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5sk-3F-lcq">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weather" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5sk-3F-lcq">
                                 <rect key="frame" x="35" y="234" width="250" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="RzA-BU-CJr"/>
@@ -279,11 +279,11 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="YWI-aD-m0l"/>
+                                <exclude reference="huF-3A-9zm"/>
                                 <exclude reference="XUV-WM-Fyt"/>
                                 <exclude reference="dqg-VY-d6w"/>
                                 <exclude reference="bGk-lN-4NZ"/>
-                                <exclude reference="YWI-aD-m0l"/>
-                                <exclude reference="huF-3A-9zm"/>
                                 <exclude reference="6nv-bh-J04"/>
                                 <exclude reference="Fer-8d-KRt"/>
                                 <exclude reference="PAW-PD-tNX"/>
