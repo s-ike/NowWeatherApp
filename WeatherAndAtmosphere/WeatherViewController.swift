@@ -2,15 +2,18 @@
 //  WeatherViewController.swift
 //  WeatherAndAtmosphere
 //
-//  Created by 池田 俊太郎 on 2015/06/18.
-//  Copyright (c) 2015年 池田 俊太郎. All rights reserved.
+//  Created by S.Ikeda on 2015/06/18.
+//  Copyright (c) 2015年 S.Ikeda. All rights reserved.
 //
 
 import UIKit
 import CoreLocation
 import Alamofire
 
-class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManagerDelegate {
+class WeatherViewController: UIViewController,CLLocationManagerDelegate {
+    // 表示ラベル：バック
+    @IBOutlet weak var backLabel: UILabel!
+    @IBOutlet weak var backLabelWidth: NSLayoutConstraint!
     // 表示ラベル：地名
     @IBOutlet weak var cityLabel: UILabel!
     // 表示ビュー：天気アイコン
@@ -26,8 +29,11 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
     // 表示ラベル：降水量
     @IBOutlet weak var rainLabel: UILabel!
     
+    // 画面横幅サイズを格納するメンバ変数
+    let screenWidth = UIScreen.mainScreen().bounds.size.width
+    
     // 地名格納変数
-    var addressData: String = "Hoge"
+    var addressData: String = "--"
     // 現在地の位置情報の取得にはCLLocationManagerを使用
     var lm: CLLocationManager!
     // 取得した緯度を保持するインスタンス
@@ -61,6 +67,9 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
         // インディケーターを設置
         self.view.addSubview(indicator)
         
+        // バックラベルのサイズ設定
+        backLabelWidth.constant = screenWidth-40
+        
         // フィールドの初期化
         lm = CLLocationManager()
         longitude = CLLocationDegrees()
@@ -80,12 +89,12 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
         lm.startUpdatingLocation()
     }
     
-    // ページの読み込み開始を通知
-    func dataDidStartLoad(iconImageView: UIImageView){
+    // インディケーター：再生メソッド
+    func dataDidStartLoad(){
         indicator.startAnimating()
     }
-    // ページの読み込み終了を通知
-    func dataDidFinishLoad(iconImageView: UIImageView){
+    // インディケーター：終了メソッド
+    func dataDidFinishLoad(){
         indicator.stopAnimating()
     }
     
@@ -114,6 +123,9 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
             }
         })
         
+        // インディケーター再生
+        dataDidStartLoad()
+        
         // GPSの使用を停止する．停止しない限りGPSは実行され，指定間隔で更新され続ける．
         lm.stopUpdatingLocation()
         
@@ -128,8 +140,6 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
             // パージ：weather
             self.weatherDataArray = jsonDic["weather"] as! NSArray
             self.weatherDataDic = self.weatherDataArray[0] as! NSDictionary
-            // println("コメントdic：\(self.weatherDataDic)")
-            
             var weatherDic:Dictionary = self.weatherDataDic as Dictionary
             
             for (key,value) in weatherDic {
@@ -140,7 +150,6 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
                 case "icon":
                     println("case icon：\(value)")
                     // 表示する天気画像を設定する
-                    // var dataWeatherIcon: AnyObject? = self.weatherDataDic["icon"]
                     let iconUrl = NSURL(string: "http://openweathermap.org/img/w/\(value).png")
                     println("URL用：\(value),\(iconUrl)")
                     var err: NSError?
@@ -151,9 +160,11 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
                     iv.frame = CGRectMake(0, 0, 100, 100)
                     self.view.addSubview(iv)
                     // 画像の表示する座標を指定する.
-                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-90, y: 165.0)
+                    iv.layer.position = CGPoint(x: self.view.bounds.width/2-90, y: 195.0)
+                    // インディケーター終了
+                    self.dataDidFinishLoad()
                 default:
-                    println("その他")
+                    println("weatheDic：その他")
                 }
             }
             // パージ：main
@@ -163,7 +174,7 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
             for (key,value) in mainDic {
                 switch key {
                 case "humidity":
-                    println("case humidity：\(value)")
+                    // println("case humidity：\(value)")
                     self.humidityLabel.text = "\(value)%"
                 case "temp":
                     // var tempData:Int = Int(value as! NSNumber)
@@ -171,7 +182,7 @@ class WeatherViewController: UIViewController,UIWebViewDelegate,CLLocationManage
                     var tempDataRound = Int(round(tempData))
                     self.tempLabel.text = "\((tempDataRound))℃"
                 default:
-                    println("")
+                    println("mainDic：その他")
                 }
             }
             // パージ：wind
