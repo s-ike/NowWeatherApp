@@ -1,0 +1,8 @@
+/* 
+  InfoPlist.strings
+  WeatherAndAtmosphere
+
+  Created by S.Ikeda on 2015/06/24.
+  Copyright (c) 2015年 S.Ikeda. All rights reserved.
+*/
+"CFBundleDisplayName" = "Now Weather";
